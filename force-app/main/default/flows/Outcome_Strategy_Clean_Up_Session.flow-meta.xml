@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <description>Sets outDeletedActivityCount += 1.0.</description>
+        <name>asgCountActivity</name>
+        <label>Count Activity</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>outDeletedActivityCount</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <numberValue>1.0</numberValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>loopActivitiesToDelete</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <description>Sets outDeletedOutcomeCount += 1.0.</description>
+        <name>asgCountOutcome</name>
+        <label>Count Outcome</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>outDeletedOutcomeCount</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <numberValue>1.0</numberValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>loopOutcomesToDelete</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <description>Sets outSucceeded = true; outErrorMessage = &quot;None&quot;.</description>
+        <name>asgInitialiseResult</name>
+        <label>Initialise Result</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>outSucceeded</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outErrorMessage</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>decHasActivityIds</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <description>Sets outSucceeded = false; outErrorMessage = {!$Flow.FaultMessage}.</description>
+        <name>asgSetDeleteError</name>
+        <label>Set Delete Error</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>outSucceeded</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outErrorMessage</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <description>Routes on: &quot;Activities Found&quot; when colActivitiesToDelete is null false -&gt; rdDeleteActivities; &quot;No Matching Activities&quot; otherwise -&gt; decHasOutcomeIds.</description>
+        <name>decDeleteActivities</name>
+        <label>Delete Activities?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>decHasOutcomeIds</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No Matching Activities</defaultConnectorLabel>
+        <rules>
+            <name>outActivitiesFound</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>colActivitiesToDelete</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>rdDeleteActivities</targetReference>
+            </connector>
+            <label>Activities Found</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Routes on: &quot;Outcomes Found&quot; when colOutcomesToDelete is null false -&gt; rdDeleteOutcomes; &quot;No Matching Outcomes&quot; otherwise -&gt; None.</description>
+        <name>decDeleteOutcomes</name>
+        <label>Delete Outcomes?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>No Matching Outcomes</defaultConnectorLabel>
+        <rules>
+            <name>outOutcomesFound</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>colOutcomesToDelete</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>rdDeleteOutcomes</targetReference>
+            </connector>
+            <label>Outcomes Found</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Routes on: &quot;Has Activity IDs&quot; when inActivityIds is null false -&gt; getActivitiesToDelete; &quot;No Activity IDs&quot; otherwise -&gt; decHasOutcomeIds.</description>
+        <name>decHasActivityIds</name>
+        <label>Activity IDs Supplied?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>decHasOutcomeIds</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No Activity IDs</defaultConnectorLabel>
+        <rules>
+            <name>outHasActivityIds</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>inActivityIds</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>getActivitiesToDelete</targetReference>
+            </connector>
+            <label>Has Activity IDs</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Routes on: &quot;Has Outcome IDs&quot; when inNewOutcomeIds is null false -&gt; getOutcomesToDelete; &quot;No Outcome IDs&quot; otherwise -&gt; None.</description>
+        <name>decHasOutcomeIds</name>
+        <label>New Outcome IDs Supplied?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>No Outcome IDs</defaultConnectorLabel>
+        <rules>
+            <name>outHasOutcomeIds</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>inNewOutcomeIds</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>getOutcomesToDelete</targetReference>
+            </connector>
+            <label>Has Outcome IDs</label>
+        </rules>
+    </decisions>
+    <description>Deletes session-created activities before session-created outcomes. Input IDs are resolved into collections and each collection is deleted in one operation.</description>
+    <environments>Default</environments>
+    <interviewLabel>Outcome Strategy Clean Up Session {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Subflow: Outcome Strategy - Clean Up Session</label>
+    <loops>
+        <description>Iterates over {!colActivitiesToDelete} (Asc order); each item is sent to asgCountActivity, and once exhausted the loop exits to decHasOutcomeIds.</description>
+        <name>loopActivitiesToDelete</name>
+        <label>Loop Activities To Count</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <collectionReference>colActivitiesToDelete</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>asgCountActivity</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>decHasOutcomeIds</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <loops>
+        <description>Iterates over {!colOutcomesToDelete} (Asc order); each item is sent to asgCountOutcome, and once exhausted the loop exits to None.</description>
+        <name>loopOutcomesToDelete</name>
+        <label>Loop Outcomes To Count</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <collectionReference>colOutcomesToDelete</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>asgCountOutcome</targetReference>
+        </nextValueConnector>
+    </loops>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordDeletes>
+        <description>Delete the the target object record(s) collected in {!colActivitiesToDelete}. On failure, routes to asgSetDeleteError.</description>
+        <name>rdDeleteActivities</name>
+        <label>Delete Activities</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>loopActivitiesToDelete</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>asgSetDeleteError</targetReference>
+        </faultConnector>
+        <inputReference>colActivitiesToDelete</inputReference>
+    </recordDeletes>
+    <recordDeletes>
+        <description>Delete the the target object record(s) collected in {!colOutcomesToDelete}. On failure, routes to asgSetDeleteError.</description>
+        <name>rdDeleteOutcomes</name>
+        <label>Delete Outcomes</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>loopOutcomesToDelete</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>asgSetDeleteError</targetReference>
+        </faultConnector>
+        <inputReference>colOutcomesToDelete</inputReference>
+    </recordDeletes>
+    <recordLookups>
+        <description>Query OutcomeActivity for all matching records where Id in {!inActivityIds}. Retrieves Id. On failure, routes to asgSetDeleteError.</description>
+        <name>getActivitiesToDelete</name>
+        <label>Get Activities To Delete</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>decDeleteActivities</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>asgSetDeleteError</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>In</operator>
+            <value>
+                <elementReference>inActivityIds</elementReference>
+            </value>
+        </filters>
+        <object>OutcomeActivity</object>
+        <outputReference>colActivitiesToDelete</outputReference>
+        <queriedFields>Id</queriedFields>
+    </recordLookups>
+    <recordLookups>
+        <description>Query Outcome for all matching records where Id in {!inNewOutcomeIds}. Retrieves Id. On failure, routes to asgSetDeleteError.</description>
+        <name>getOutcomesToDelete</name>
+        <label>Get Outcomes To Delete</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>decDeleteOutcomes</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>asgSetDeleteError</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>In</operator>
+            <value>
+                <elementReference>inNewOutcomeIds</elementReference>
+            </value>
+        </filters>
+        <object>Outcome</object>
+        <outputReference>colOutcomesToDelete</outputReference>
+        <queriedFields>Id</queriedFields>
+    </recordLookups>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>asgInitialiseResult</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>colActivitiesToDelete</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>OutcomeActivity</objectType>
+    </variables>
+    <variables>
+        <name>colOutcomesToDelete</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Outcome</objectType>
+    </variables>
+    <variables>
+        <name>inActivityIds</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>inNewOutcomeIds</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>outDeletedActivityCount</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <scale>0</scale>
+        <value>
+            <numberValue>0.0</numberValue>
+        </value>
+    </variables>
+    <variables>
+        <name>outDeletedOutcomeCount</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <scale>0</scale>
+        <value>
+            <numberValue>0.0</numberValue>
+        </value>
+    </variables>
+    <variables>
+        <name>outErrorMessage</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>outSucceeded</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <booleanValue>true</booleanValue>
+        </value>
+    </variables>
+</Flow>

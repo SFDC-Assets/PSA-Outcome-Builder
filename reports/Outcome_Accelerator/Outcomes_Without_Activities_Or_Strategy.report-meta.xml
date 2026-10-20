@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Outcome$Name</field>
+    </columns>
+    <columns>
+        <field>Outcome$CreatedBy</field>
+    </columns>
+    <columns>
+        <field>Outcome$CreatedDate</field>
+    </columns>
+    <columns>
+        <field>Outcome$Status</field>
+    </columns>
+    <crossFilters>
+        <operation>without</operation>
+        <primaryTableColumn>Outcome$Id</primaryTableColumn>
+        <relatedTable>OutcomeActivity</relatedTable>
+        <relatedTableJoinColumn>Outcome</relatedTableJoinColumn>
+    </crossFilters>
+    <crossFilters>
+        <operation>without</operation>
+        <primaryTableColumn>Outcome$Id</primaryTableColumn>
+        <relatedTable>ImpactStrategyAssignment</relatedTable>
+        <relatedTableJoinColumn>Outcome</relatedTableJoinColumn>
+    </crossFilters>
+    <description>Outcomes created in the last 7 days with no activities and no strategy link. Usually left behind when a user closes the Outcome Strategy Builder part-way through. Check before deleting.</description>
+    <format>Tabular</format>
+    <name>Outcomes Without Activities or Strategy</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Outcome_Accelerator_Outcomes__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <sortColumn>Outcome$CreatedDate</sortColumn>
+    <sortOrder>Desc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Outcome$CreatedDate</dateColumn>
+        <interval>INTERVAL_LAST7</interval>
+    </timeFrameFilter>
+</Report>

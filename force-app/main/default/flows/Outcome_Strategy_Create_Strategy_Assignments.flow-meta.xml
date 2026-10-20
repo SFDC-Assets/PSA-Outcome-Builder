@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <description>Sets outCreatedAssignmentIds += {!loopCreatedAssignments.Id}; outCreatedCount += 1.0.</description>
+        <name>asgAddCreatedAssignmentId</name>
+        <label>Add Created Assignment ID</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>outCreatedAssignmentIds</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>loopCreatedAssignments.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outCreatedCount</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <numberValue>1.0</numberValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>loopCreatedAssignments</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <description>Sets colOutcomeIds += {!loopInputOutcomes.Id}.</description>
+        <name>asgAddOutcomeId</name>
+        <label>Add Outcome ID</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>colOutcomeIds</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>loopInputOutcomes.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>loopInputOutcomes</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <description>Sets recPendingAssignment.ImpactStrategyId = {!inStrategyId}; recPendingAssignment.OutcomeId = {!loopOutcomeIds}; colPendingAssignments += {!recPendingAssignment}.</description>
+        <name>asgAddPendingAssignment</name>
+        <label>Add Pending Assignment</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>recPendingAssignment.ImpactStrategyId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>inStrategyId</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>recPendingAssignment.OutcomeId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>loopOutcomeIds</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>colPendingAssignments</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>recPendingAssignment</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>loopOutcomeIds</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <description>Sets outSucceeded = true; outErrorMessage = &quot;None&quot;.</description>
+        <name>asgInitialiseResult</name>
+        <label>Initialise Result</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>outSucceeded</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outErrorMessage</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>decInputsPresent</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <description>Sets varAssignmentExists = true; outExistingAssignmentIds += {!loopExistingAssignments.Id}.</description>
+        <name>asgMarkExisting</name>
+        <label>Mark Existing Assignment</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>varAssignmentExists</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outExistingAssignmentIds</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>loopExistingAssignments.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>loopExistingAssignments</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <description>Sets varAssignmentExists = false.</description>
+        <name>asgResetExistingFlag</name>
+        <label>Reset Existing Flag</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>varAssignmentExists</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>loopExistingAssignments</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <description>Sets outSucceeded = false; outErrorMessage = {!$Flow.FaultMessage}.</description>
+        <name>asgSetCreateError</name>
+        <label>Set Create Error</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>outSucceeded</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outErrorMessage</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <description>Sets outSucceeded = false; outErrorMessage = &quot;A strategy ID and at least one outcome ID are required.&quot;.</description>
+        <name>asgSetInputError</name>
+        <label>Set Input Error</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>outSucceeded</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outErrorMessage</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>A strategy ID and at least one outcome ID are required.</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <description>Routes on: &quot;Assignment Matches&quot; when loopExistingAssignments.OutcomeId = {!loopOutcomeIds} -&gt; asgMarkExisting; &quot;Different Assignment&quot; otherwise -&gt; loopExistingAssignments.</description>
+        <name>decAssignmentExists</name>
+        <label>Assignment Exists?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>loopExistingAssignments</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Different Assignment</defaultConnectorLabel>
+        <rules>
+            <name>outAssignmentMatches</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>loopExistingAssignments.OutcomeId</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>loopOutcomeIds</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>asgMarkExisting</targetReference>
+            </connector>
+            <label>Assignment Matches</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Routes on: &quot;Assignments To Create&quot; when colPendingAssignments is null false -&gt; rcCreateAssignments; &quot;Nothing To Create&quot; otherwise -&gt; None.</description>
+        <name>decCreatePending</name>
+        <label>Create Pending Assignments?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Nothing To Create</defaultConnectorLabel>
+        <rules>
+            <name>outPendingAssignmentsExist</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>colPendingAssignments</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>rcCreateAssignments</targetReference>
+            </connector>
+            <label>Assignments To Create</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Routes on: &quot;Inputs Present&quot; when inStrategyId is null false AND inOutcomes is null false -&gt; loopInputOutcomes; &quot;Invalid Inputs&quot; otherwise -&gt; asgSetInputError.</description>
+        <name>decInputsPresent</name>
+        <label>Inputs Present?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>asgSetInputError</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Invalid Inputs</defaultConnectorLabel>
+        <rules>
+            <name>outInputsPresent</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>inStrategyId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>inOutcomes</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>loopInputOutcomes</targetReference>
+            </connector>
+            <label>Inputs Present</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Routes on: &quot;Already Exists&quot; when varAssignmentExists = true -&gt; loopOutcomeIds; &quot;Missing&quot; otherwise -&gt; asgAddPendingAssignment.</description>
+        <name>decMissingAssignment</name>
+        <label>Missing Assignment?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>asgAddPendingAssignment</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Missing</defaultConnectorLabel>
+        <rules>
+            <name>outAlreadyExists</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>varAssignmentExists</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>loopOutcomeIds</targetReference>
+            </connector>
+            <label>Already Exists</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Routes on: &quot;Already Collected&quot; when colOutcomeIds contains {!loopInputOutcomes.Id} -&gt; loopInputOutcomes; &quot;Collect&quot; otherwise -&gt; asgAddOutcomeId.</description>
+        <name>decOutcomeIdAlreadyCollected</name>
+        <label>Outcome ID Already Collected?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>asgAddOutcomeId</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Collect</defaultConnectorLabel>
+        <rules>
+            <name>outOutcomeIdAlreadyCollected</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>colOutcomeIds</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <elementReference>loopInputOutcomes.Id</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>loopInputOutcomes</targetReference>
+            </connector>
+            <label>Already Collected</label>
+        </rules>
+    </decisions>
+    <description>Creates only missing strategy assignments for the supplied outcomes. Existing assignments are queried once and new records are inserted in one collection operation. Returns the IDs of created assignments in outCreatedAssignmentIds and of assignments that already existed (and were skipped) in outExistingAssignmentIds.</description>
+    <environments>Default</environments>
+    <interviewLabel>Outcome Strategy Create Strategy Assignments {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Subflow: Outcome Strategy - Create Strategy Assignments</label>
+    <loops>
+        <description>Iterates over {!colPendingAssignments} (Asc order); each item is sent to asgAddCreatedAssignmentId, and once exhausted the loop exits to None.</description>
+        <name>loopCreatedAssignments</name>
+        <label>Loop Created Assignments</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <collectionReference>colPendingAssignments</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>asgAddCreatedAssignmentId</targetReference>
+        </nextValueConnector>
+    </loops>
+    <loops>
+        <description>Iterates over {!colExistingAssignments} (Asc order); each item is sent to decAssignmentExists, and once exhausted the loop exits to decMissingAssignment.</description>
+        <name>loopExistingAssignments</name>
+        <label>Loop Existing Assignments</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <collectionReference>colExistingAssignments</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>decAssignmentExists</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>decMissingAssignment</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <loops>
+        <description>Iterates over {!inOutcomes} (Asc order); each item is sent to decOutcomeIdAlreadyCollected, and once exhausted the loop exits to getExistingAssignments.</description>
+        <name>loopInputOutcomes</name>
+        <label>Loop Input Outcomes</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <collectionReference>inOutcomes</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>decOutcomeIdAlreadyCollected</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>getExistingAssignments</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <loops>
+        <description>Iterates over {!colOutcomeIds} (Asc order); each item is sent to asgResetExistingFlag, and once exhausted the loop exits to decCreatePending.</description>
+        <name>loopOutcomeIds</name>
+        <label>Loop Outcome IDs</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <collectionReference>colOutcomeIds</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>asgResetExistingFlag</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>decCreatePending</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <description>Create a new the target object record setting (field values from prior screen/assignment input). On failure, routes to asgSetCreateError.</description>
+        <name>rcCreateAssignments</name>
+        <label>Create Strategy Assignments</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>loopCreatedAssignments</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>asgSetCreateError</targetReference>
+        </faultConnector>
+        <inputReference>colPendingAssignments</inputReference>
+    </recordCreates>
+    <recordLookups>
+        <description>Query ImpactStrategyAssignment for all matching records where ImpactStrategyId = {!inStrategyId}; OutcomeId in {!colOutcomeIds}. Retrieves Id, OutcomeId. On failure, routes to asgSetCreateError.</description>
+        <name>getExistingAssignments</name>
+        <label>Get Existing Strategy Assignments</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>loopOutcomeIds</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>asgSetCreateError</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>ImpactStrategyId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>inStrategyId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>OutcomeId</field>
+            <operator>In</operator>
+            <value>
+                <elementReference>colOutcomeIds</elementReference>
+            </value>
+        </filters>
+        <object>ImpactStrategyAssignment</object>
+        <outputReference>colExistingAssignments</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>OutcomeId</queriedFields>
+    </recordLookups>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>asgInitialiseResult</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>colExistingAssignments</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>ImpactStrategyAssignment</objectType>
+    </variables>
+    <variables>
+        <name>colOutcomeIds</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>colPendingAssignments</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>ImpactStrategyAssignment</objectType>
+    </variables>
+    <variables>
+        <name>inOutcomes</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Outcome</objectType>
+    </variables>
+    <variables>
+        <name>inStrategyId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>outCreatedAssignmentIds</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>outCreatedCount</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <scale>0</scale>
+        <value>
+            <numberValue>0.0</numberValue>
+        </value>
+    </variables>
+    <variables>
+        <description>IDs of assignments that already existed for the strategy and supplied outcomes, so were not created again.</description>
+        <name>outExistingAssignmentIds</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>outErrorMessage</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>outSucceeded</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <booleanValue>true</booleanValue>
+        </value>
+    </variables>
+    <variables>
+        <name>recPendingAssignment</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>ImpactStrategyAssignment</objectType>
+    </variables>
+    <variables>
+        <name>varAssignmentExists</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </variables>
+</Flow>
