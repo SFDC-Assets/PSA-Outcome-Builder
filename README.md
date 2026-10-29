@@ -102,7 +102,7 @@ A Salesforce org with one of these licences, all of which include Outcome Manage
 - Nonprofit Cloud
 - Education Cloud
 - Public Sector Solutions
-- Net Zero Cloud - please confirm the edition you  have offers Outcome Management data model as trial
+- Net Zero Cloud - please confirm the edition you  have offers Outcome Management data model as the trial org flagged not having the right objects during testing
 - Energy and Utilities Cloud
 
 **Accelerator or Technology-Specific Assumptions** 
@@ -224,6 +224,7 @@ Thank you also to everyone who helped test the accelerator:
 - Stevie Hight, Victim Support: Manaaki Tāngata
 - Daniel Howell, GravityLab
 
+Thank you to Emmanuel Schweitzer for PMO guidance and my manager, Chris Tye, for his support and sponsorship.
 
 ## Terms of Use
 
